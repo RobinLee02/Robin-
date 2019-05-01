@@ -26,12 +26,13 @@ public class PacmanRunner extends JFrame {
 	
 	// Notice this intuitive method for finding the screen size 
 	public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	public static final int WIDTH = (int) (screenSize.getWidth()*3/4),HEIGHT=(int) (screenSize.getHeight()*3/4);
+	//public static final int WIDTH = (int) (screenSize.getWidth()*3/4),HEIGHT=(int) (screenSize.getHeight()*3/4);
+	public static final int WIDTH = 1000,HEIGHT=610;
 	private static final int REFRESH_RATE = 10;
 	
 	public int time = 0;
 	
-       
+	
  
  
 	public PacmanRunner() {
@@ -55,17 +56,19 @@ public class PacmanRunner extends JFrame {
 	}
 
 	private void start() {
-		JFrame frame = new JFrame("Frogger");
+		JFrame frame = new JFrame("Pacman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		panel = new JPanel() {
 			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				drawGame(g);
+				game.draw(g);
+				
 			}
 		};
 		// random color to the background
-		panel.setBackground(new Color(0,0,0));
+		panel.setBackground(Color.BLUE);
 		
 		// so that the frame isn't minimized
 		panel.setPreferredSize(new Dimension(WIDTH,HEIGHT));
@@ -102,7 +105,7 @@ public class PacmanRunner extends JFrame {
 		int hurts = 1000/REFRESH_RATE;
 		time = ticks/hurts;
 		if(ticks %hurts == 0) {
-			System.out.println(time);
+			//System.out.println(time);
 		}
 		
 		
@@ -128,9 +131,12 @@ public class PacmanRunner extends JFrame {
 		map.put("up", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				hit("up");
-				 
-				game.Pacman1.moveUp();
+				hit("up"); 
+				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height >= 30+ game.Pacman1.getRect().height) {
+					game.Pacman1.moveUp();
+				}
+				
+				
 				
 			}
 		});
@@ -140,7 +146,9 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("left");
-				game.Pacman1.moveLeft();
+				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width >= 30+ game.Pacman1.getRect().width) {
+					game.Pacman1.moveLeft();
+				}
 			}
 		});
 		
@@ -150,7 +158,9 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("down");
-				game.Pacman1.moveDown();
+				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height <= 540+ game.Pacman1.getRect().height) {
+					game.Pacman1.moveDown();
+				}
 			}
 		});
 		
@@ -160,7 +170,9 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("right");
-				game.Pacman1.moveRight();
+				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width <= 920+ game.Pacman1.getRect().width) {
+					game.Pacman1.moveRight();
+				}
 			}
 		});
 
