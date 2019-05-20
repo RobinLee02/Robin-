@@ -68,7 +68,7 @@ public class PacmanRunner extends JFrame {
 			}
 		};
 		// random color to the background
-		panel.setBackground(Color.WHITE);
+		panel.setBackground(Color.BLUE);
 		
 		// so that the frame isn't minimized
 		panel.setPreferredSize(new Dimension(WIDTH,HEIGHT));
@@ -132,11 +132,10 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("up"); 
-				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height >= 25+ game.Pacman1.getRect().height) {
+				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height >= 30+ game.Pacman1.getRect().height) {
 					game.Pacman1.moveUp();
-				} else {
-					game.Pacman1.getRect().y = 580 - game.Pacman1.getRect().y;
 				}
+				
 				
 				
 			}
@@ -147,7 +146,7 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("left");
-				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width >= 20+ game.Pacman1.getRect().width) {
+				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width >= 30+ game.Pacman1.getRect().width) {
 					game.Pacman1.moveLeft();
 				}
 			}
@@ -159,11 +158,9 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("down");
-				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height <= 560+ game.Pacman1.getRect().height) {
+				if (game.Pacman1.getRect().y+game.Pacman1.getRect().height <= 540+ game.Pacman1.getRect().height) {
 					game.Pacman1.moveDown();
-				} else {
-					game.Pacman1.getRect().y = 0;
-				} 
+				}
 			}
 		});
 		
@@ -173,13 +170,8 @@ public class PacmanRunner extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				hit("right");
-				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width <= 945+ game.Pacman1.getRect().width) {
+				if (game.Pacman1.getRect().x+game.Pacman1.getRect().width <= 920+ game.Pacman1.getRect().width) {
 					game.Pacman1.moveRight();
-				} else {
-					game.level++;
-					game.Pacman1.getRect().x = 30;
-					game.Pacman1.getRect().y = 295;
-					
 				}
 			}
 		});

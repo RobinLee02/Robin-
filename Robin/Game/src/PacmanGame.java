@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.util.*;
 
@@ -13,7 +12,7 @@ public class PacmanGame {
 	List<Object> Pacman = new ArrayList<>();
 	
 	// list of autos should come from loadLevel
-	List<Object> Obstacles = new ArrayList<>();
+	List<Object> Ghosts = new ArrayList<>();
 	
 	List<Object> Foods = new ArrayList<>();
 	
@@ -21,7 +20,6 @@ public class PacmanGame {
 	public final static String PATH_PREFIX = "res/images/";
 	Pacman Pacman1;
 	Food Food1;
-	Obstacles Obstacles1;
 	
 	static String closeMouth = "images.png";
 
@@ -31,31 +29,59 @@ public class PacmanGame {
 	
 	public static String img = closeMouth;
 	
+	private Image background = getImage("map.png");
 	
 	
 	int level=0;
 	
 	public PacmanGame() {
 
-		Obstacles1 = new Obstacles(0,0,0,0,null);
 		
-		Pacman1 = new Pacman(30, 295, 30, 30,img, null);
+		
+		Pacman1 = new Pacman(500, 500, 34, 30,img, null);
 		Pacman.add(Pacman1);
 		
-		//Food1 = new Food(400, 400, 15, 15, pacmanFood, null);
-		//Foods.add(Food1);
+		Food1 = new Food(400, 400, 15, 15, pacmanFood, null);
+		Foods.add(Food1);
 		
+		level++;
 		
 		loadLevel();
 	}
 	
 	
 	
+	protected  Image getImage(String fn) {
+		Image img = null;
+        fn = PATH_PREFIX+fn;
+        try {
+
+            img = ImageIO.read(this.getClass().getResource(fn));
+           
+
+        } catch (Exception e) {
+            
+        }
+        return img;
+	}
 	
 	
 	
 	
-	
+	private void makeMap(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.fillRect(10, 10, 980, 590);
+		g.setColor(Color.BLUE);
+		
+		//for (int i = 10; i<600;i+=120) {
+			//g.fillRect(100, i, 30, 50);
+		//}
+		g.drawImage(background, 0, -220, 1000,1000, null);
+		//g.fillRect(100, 100, 200, 30);
+		
+		
+		//g.fillRect(100, 400, 30, 200);
+	}
 	private void loadLevel() {
 		// this is just an idea.  Maybe store the different levels as text files
 		List<List<Object>> levelObjects = LevelReader.readInLevel(level);
@@ -74,8 +100,7 @@ public class PacmanGame {
 			}
 		}
 		Pacman.add(Pacman1);
-		//Foods.add(Food1);
-		Obstacles.add(Obstacles1);
+		Foods.add(Food1);
 	}
 
 
@@ -87,7 +112,7 @@ public class PacmanGame {
 	}
 
 	public void draw(Graphics g) {
-		g.drawString(String.valueOf(level), 50, 50);
+		makeMap(g);
 		for(Object go:Pacman) {
 			go.draw(g);
 		}
@@ -95,11 +120,10 @@ public class PacmanGame {
 			go.draw(g);
 			
 		}
-		Obstacles1.draw(g);
 		
 		for (int i = 0; i < Foods.size(); i++) {
-			if (Pacman1.hit(Obstacles1) == true ) {
-				System.out.println("barack mobamba ");
+			if (Pacman1.hit(Foods.get(i)) == true ) {
+				//System.out.println("barack mobamba ");
 				((Food) Foods.get(i)).remove();
 			}
 		}
