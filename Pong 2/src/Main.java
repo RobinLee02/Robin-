@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 
@@ -9,13 +10,13 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        JFrame frm = new JFrame();
-        frm.setTitle("Pong");
+        JFrame frame = new JFrame();
+        frame.setTitle("Pong");
         Pong g = new Pong();
-        frm.setContentPane(g);
-        frm.setSize(300, 700);
-        frm.setResizable(false);
-        frm.setVisible(true);
-        frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(g);
+        frame.setSize(600, 600);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
