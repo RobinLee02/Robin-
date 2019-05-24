@@ -4,6 +4,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -17,31 +18,35 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
     
     private boolean start;
 
+    
+    //only need for keys
     private HashSet<String> Arrows = new HashSet<String>();
 
 
     
-    private static int paddleSPEED = 1;
+    private static double paddleSPEED = 2;
     private int padHeight = 5, padWidth = 40;
     
     private int bottomPadX, topPadX;
-    private int distanceFromEnd = 70;
+    private int distanceFromEnd = 30;
 
     
-    private double ballX, ballY, velX = 1.05, velY = 1.05, ballSize = 20;
-
+    private double ballX, ballY, velX = 1.1, velY = 1.8, ballSize = 40;
     
+    //how much u can miss before losing
+    private int limit = 5;
     
     
     private int  scoreAI, scoreHuman;
-
+    int num = (int)Math.random() * 3 + 1;
+    
     public Pong() {
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        start = true;
-        t.setInitialDelay(100);
-        t.start();
+        
+        startGame();
+        
     }
     
     
@@ -50,7 +55,7 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
     
     public Color ballColor = Color.white;
     
-    
+    boolean alive = true;
     
 
     @Override
@@ -58,6 +63,8 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         super.paintComponent(g);
         g.setColor(Color.black);
         g.fillRect(0, 0, width, height/2);
+        g.setColor(Color.white);
+        g.fillRect(0, height/2, width, height/2);
         //make look better
         Graphics2D g1 = (Graphics2D) g;
         
@@ -68,12 +75,21 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         
         // initial positioning
         if (start) {
+        	
+        	ballX = 150;
+        	ballY = 150;
+        	
+        	velX = new Random().nextInt(1) -1;
+        	velY = 1.5;
+        	
             bottomPadX = width / 2 - padWidth / 2;
             topPadX = bottomPadX;
-            ballX = width / 2 - ballSize / 2;
-            ballY = height / 2 - ballSize / 2;
+            
             start = false;
         }
+        
+        
+        
         // bottom pad
         Rectangle2D bottomPad = new Rectangle(bottomPadX, height - padHeight - distanceFromEnd, padWidth, padHeight);
         g1.setPaint(Color.BLACK);
@@ -90,15 +106,18 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         g1.setPaint(ballColor);
         g1.fill(ball);
         
+        
+        g1.setFont(new Font("default", Font.BOLD, 16));
+        
         g1.setPaint(Color.BLACK);
-        String score = "You missed:    " + new Integer(scoreAI);
-        g1.drawString(score, 240, 560);
+        String score = "MISSED:    " + new Integer(scoreAI);
+        g1.drawString(score, 0, 560);
         
         
         
         g1.setPaint(Color.WHITE);
-        String time1 = "Computer missed: " + new Integer(scoreHuman);
-        g1.drawString(time1, 240, 20);
+        String time1 = "TIME    ALIVE:    " + new Integer(time/200);
+        g1.drawString(time1, 0, 20);
         
         
         
@@ -111,17 +130,38 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         if (ballX < 0 || ballX > width - ballSize) {
             velX = -velX;
         }
-        // reVERSE direCtion
+        
+        
         if (ballY < 0) {
             velY = -velY;
-            scoreHuman++;
         }
 
         if (ballY + ballSize > height) {
             velY = -velY;
+        }
+        
+        
+        
+        
+        
+        
+        //SCORING
+        if (ballY < 0) {
+            scoreHuman++;
+           // return;
+        }
+
+        if (ballY + ballSize > height) {
             scoreAI++;
    		 	System.out.println("You failed:" + scoreAI + " times!");
+   		 	//return;
         }
+        
+        
+        
+        
+        
+        //TO OTHER DIRECT
         
         if (ballY + ballSize >= height - padHeight - distanceFromEnd && velY > 0) {
         	 if (ballX + ballSize >= bottomPadX && ballX <= bottomPadX + padWidth) {
@@ -142,11 +182,11 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         
         
             
-
+        //MOVE BALL
         ballX += velX;
         ballY += velY;
 
-      
+        //MOVE PADDLE
         if (Arrows.contains("LEFT")) {
         	if (bottomPadX > 0) {
         		bottomPadX -= paddleSPEED;
@@ -162,7 +202,7 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         	}
         }
         
-
+        //BOUNCE BALL
         double ballLOC = ballX - topPadX;
         
         if (ballLOC > 0) {
@@ -180,6 +220,7 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         	}
         }
         
+        //switching colors
         if (ballY < 300) {
         	ballColor = Color.white;
         } else {
@@ -190,16 +231,65 @@ public class Pong extends JPanel implements KeyListener, ActionListener {
         
         
         time++;
-        if (time % 200 == 0) {
-        	//System.out.println(time/200);
-        }
         
-        if (((time/200)+1)%50==0 && scoreAI == scoreAI) {
-        	System.out.println("INCREASE");
-        	
-        }
+       challenges();
+       if (scoreAI > limit){
+    	   endGame();
+    	   alive = false;
+    	   
+       }
        
-        repaint();
+       if (alive == true){
+    	   repaint();
+       }
+       
+   
+       
+    }
+    
+    public void challenges(){
+    	if (time%1000==0) {
+    		this.ballSize -=1;
+    		this.padWidth -=1;
+    		
+    		if (padWidth < 5 || ballSize < 5){
+    			endGame();
+    		}
+    		if (velY > 0){
+    			this.velY +=1;
+    			
+    		} else {
+    			this.velY -= 1;
+    		}
+    		
+    	}
+    	
+    	
+    	if (time%2000 == 0) {
+
+    		if (velY > 0){
+    			this.velY =1.8;
+    		} else {
+    			this.velY = -1.8;
+    		}
+			//this.ballY = 1;
+    	}
+    	
+    }
+    public void startGame(){
+    	
+    	start = true;
+    	t.setInitialDelay(50);
+    	t.start();
+
+
+    }
+
+    public void endGame(){
+    	//System.out.println("ended");
+    	ballY = 0;
+    	ballX = 0;
+    	this.paddleSPEED = 0;
     }
 
     @Override
